@@ -1,5 +1,4 @@
 import threading
-import time
 import keyboard
 import pyautogui
 import tkinter as tk
@@ -45,7 +44,6 @@ def main_menu():
     app = tk.Tk()
     app.title('Coordinate Capture')
     def app_placement():
-        time.sleep(0.1)
         window_width = app.winfo_width()
         window_height = app.winfo_height()
         window_x = (screen_width - window_width) - 12
