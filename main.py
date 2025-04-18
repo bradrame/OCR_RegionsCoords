@@ -3,6 +3,8 @@ import keyboard
 import pyautogui
 import tkinter as tk
 from tkinter import Toplevel
+import re
+import time
 
 # INITIALIZE
 screen_width, screen_height = pyautogui.size()
@@ -62,11 +64,39 @@ def main_menu():
                           font=font_bold)
     info_label.pack(padx=20, pady=5)
 
+# BUTTONS SETUP
     coords_button = tk.Button(app, text='Get Coords', command=lambda: button_press('Get'), width=30, height=2, bg=button_color)
     coords_button.pack(pady=5)
     tk.Button(app, text='Quit', command=lambda: button_press('Quit'), width=30, height=2, bg=button_color).pack(pady=5)
     keyboard.add_hotkey('ctrl+q', lambda: button_press('Quit'))
 
+# MANUAL OVERLAY SETUP
+    manually_label = tk.Label(app, text='Write the region parameters in\n'
+                                        'the text box below to manually\n'
+                                        'check for that region location.')
+    manually_label.pack(pady=5)
+    manually_entry = tk.Entry(app, width=30)
+    manually_entry.pack(pady=5)
+    check_label = tk.Label(app, text='Example: (5, 10, 10, 15)\n'
+                                      'Press enter to check.',
+                           fg='gray', font=font_bold)
+    check_label.pack(pady=5)
+    manual_overlay = SelectionOverlay(app)
+    def show_manual_region(event):
+        input_text = manually_entry.get()
+        numbers = re.findall(r'\d+', input_text)
+        if len(numbers) >= 4:
+            try:
+                x1, y1, x2, y2 = map(int, numbers[:4])
+                manual_overlay.show(x1, y1, x2, y2)
+                app.after(1000, manual_overlay.hide)
+            except ValueError:
+                print('--INVALID COORDINATES ENTERED')
+        else:
+            print('--ERROR: MANUAL OVERLAY')
+    manually_entry.bind('<Return>', show_manual_region)
+
+# COORDINATE / REGION HISTORY
     coords_label = tk.Label(app, text='\nCollected Coordinates:', font=font_bold)
     coords_label.pack(pady=5)
     currentCoord_label = tk.Label(app, text=current_coord,
