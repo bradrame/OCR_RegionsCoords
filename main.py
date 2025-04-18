@@ -4,7 +4,6 @@ import pyautogui
 import tkinter as tk
 from tkinter import Toplevel
 import re
-import time
 
 # INITIALIZE
 screen_width, screen_height = pyautogui.size()
